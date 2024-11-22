@@ -25,7 +25,7 @@ st.write("")
 image_path = "./Perezoso.jpg"  
 st.image(image_path, caption="Perezoso de tres dedos", use_container_width=True)
 
-fasta_file = "C:/Users/admin/OneDrive/Documentos/A UNISON/3er SEMESTRE/Bioinformatica/Copia de semana10_examen.ipynb - Colab_files/sequence (1) Sloth.fasta"
+fasta_file = "sequence (1) Sloth.fasta"
 seqfile = next(SeqIO.parse(fasta_file, "fasta"))
 seqadn = str(seqfile.seq)
 
