@@ -25,6 +25,7 @@ st.markdown("### Introduce la secuencia de ADN (puedes pegarla o escribirla)")
 
 user_input = st.text_area("Secuencia de ADN", height=200)
 
+<<<<<<< HEAD
 # Si el usuario ingresa una secuencia
 if user_input:
     seqadn = user_input.strip().replace(" ", "").replace("\n", "")  # Limpiar la secuencia de posibles espacios o saltos de línea
@@ -33,6 +34,11 @@ if user_input:
     st.markdown("### INFORMACIÓN DE LA SECUENCIA")
     st.write(f"**Secuencia:** {repr(seqadn)}")
     st.write(f"**Longitud:** {len(seqadn)}")
+=======
+fasta_file = "sequence (1) Sloth.fasta"
+seqfile = next(SeqIO.parse(fasta_file, "fasta"))
+seqadn = str(seqfile.seq)
+>>>>>>> 47af9ebacd9ce99e291aa66a9d2cf6221355fc30
 
     # Contenido de GC
     st.markdown("### CONTENIDO DE GC")
@@ -73,6 +79,7 @@ if user_input:
     def get_codons(sequence):
         return [sequence[i:i+3] for i in range(0, len(sequence), 3) if len(sequence[i:i+3]) == 3]
 
+<<<<<<< HEAD
     codons = get_codons(seqadn)
     codon_counts = Counter(codons)
 
@@ -130,3 +137,7 @@ if user_input:
 
     fig_3d = go.Figure(data=[trace_3d], layout=layout_3d)
     st.plotly_chart(fig_3d)
+=======
+fig_3d = go.Figure(data=[trace_3d], layout=layout_3d)
+st.plotly_chart(fig_3d)
+>>>>>>> 47af9ebacd9ce99e291aa66a9d2cf6221355fc30
