@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import plotly.graph_objs as go
 
-st.set_page_config(page_title="ANALISIS DE SECUENCIAS DE ADN", layout="wide")
+st.set_page_config(page_title="🔬ANALISIS DE SECUENCIAS DE ADN", layout="wide")
 
 st.header("SECUENCIA DE ADN")
 st.markdown("**Creado por: Michelle Contreras, Camila Pacheco y Paulina Zavala**")
@@ -21,123 +21,74 @@ st.markdown("**Creado por: Michelle Contreras, Camila Pacheco y Paulina Zavala**
 image_path = "./Secuencia.jpg"  
 st.image(image_path, caption="Secuencias Geneticas", use_container_width=True)
 
-st.markdown("### Introduce la secuencia de ADN (puedes pegarla o escribirla)")
+# Entrada del usuario
+st.markdown("### Introduce la secuencia de ADN (puedes pegarla o escribirla):")
+user_input = st.text_area("Secuencia de ADN", height=150)
 
-user_input = st.text_area("Secuencia de ADN", height=200)
-
-<<<<<<< HEAD
-# Si el usuario ingresa una secuencia
+# Procesamiento de la secuencia
 if user_input:
-    seqadn = user_input.strip().replace(" ", "").replace("\n", "")  # Limpiar la secuencia de posibles espacios o saltos de línea
-    
-    # Realiza los cálculos y visualizaciones con la secuencia ingresada
-    st.markdown("### INFORMACIÓN DE LA SECUENCIA")
-    st.write(f"**Secuencia:** {repr(seqadn)}")
-    st.write(f"**Longitud:** {len(seqadn)}")
-=======
-fasta_file = "sequence (1) Sloth.fasta"
-seqfile = next(SeqIO.parse(fasta_file, "fasta"))
-seqadn = str(seqfile.seq)
->>>>>>> 47af9ebacd9ce99e291aa66a9d2cf6221355fc30
+    seqadn = user_input.strip().replace(" ", "").replace("\n", "").upper()
+    st.markdown("### Información de la Secuencia")
+    st.write(f"**Secuencia:** {seqadn}")
+    st.write(f"**Longitud:** {len(seqadn)} ")
 
     # Contenido de GC
-    st.markdown("### CONTENIDO DE GC")
+    st.markdown("### Contenido de GC")
     gc_content = gc_fraction(seqadn) * 100
-    st.write(f"**GC %:** {gc_content:.2f}%")
+    st.write(f"**Porcentaje de GC:** {gc_content:.2f}%")
+    
+     # Composición de nucleótidos
+    st.markdown("### Composición de Nucleótidos")
+    nucleotides = {n: seqadn.count(n) / len(seqadn) * 100 for n in 'ACGT'}
 
-    # Composición de nucleótidos
-    st.markdown("### COMPOSICION DE NUCLEOTIDOS")
-    def nucleotides_composition(seq):
-        nucleotides = {'A': 0, 'C': 0, 'G': 0, 'T': 0}
-        for n in nucleotides:
-            nucleotides[n] = seq.count(n) / len(seq) * 100
-        return nucleotides
-
-    nucleotide_composition = nucleotides_composition(seqadn)
-
-    # Gráfico de barras horizontal para la composición de nucleótidos
-    labels = list(nucleotide_composition.keys())
-    sizes = list(nucleotide_composition.values())
-    colors = ['#ff7f7f', '#9b0000', '#dc143c', '#ff6347']  # Colores personalizados
-
-    # Crear gráfico de barras horizontal
+    # Gráfico de barras para la composición
     fig_bar = go.Figure(data=[go.Bar(
-        x=sizes,
-        y=labels,
-        orientation='h',
-        marker=dict(color=colors)
+        x=list(nucleotides.keys()),
+        y=list(nucleotides.values()),
+        marker=dict(color=['#ff7f7f', '#9b0000', '#dc143c', '#ff6347'])
     )])
     fig_bar.update_layout(
         title="Composición de Nucleótidos del ADN",
-        xaxis_title="Porcentaje",
-        yaxis_title="Nucleótidos"
+        xaxis_title="Nucleótidos",
+        yaxis_title="Porcentaje"
     )
     st.plotly_chart(fig_bar)
 
-    # Frecuencia de codones
-    st.markdown("### FRECUENCIA DE CODONES")
-    def get_codons(sequence):
-        return [sequence[i:i+3] for i in range(0, len(sequence), 3) if len(sequence[i:i+3]) == 3]
 
-<<<<<<< HEAD
+    # Frecuencia de codones
+    st.markdown("### Frecuencia de Codones")
+    def get_codons(seq):
+        return [seq[i:i+3] for i in range(0, len(seq), 3) if len(seq[i:i+3]) == 3]
+
     codons = get_codons(seqadn)
     codon_counts = Counter(codons)
 
-    # Preparar datos para la visualización 3D de codones
-    st.markdown("VISUALIZACIÓN 3D")
+    # Preparar datos para la visualización 3D
     x, y, z, values, codon_info = [], [], [], [], []
-
     for codon, count in codon_counts.items():
-            # Solo procesar codones válidos (sin caracteres extraños)
-            if all(n in 'ACGT' for n in codon):
-                x_index = 'ACGT'.index(codon[0])
-                y_index = 'ACGT'.index(codon[1])
-                z_index = 'ACGT'.index(codon[2])
+        if all(n in 'ACGT' for n in codon):
+            x.append('ACGT'.index(codon[0]))
+            y.append('ACGT'.index(codon[1]))
+            z.append('ACGT'.index(codon[2]))
+            values.append(count)
+            codon_info.append(f"Codón: {codon}, Frecuencia: {count}")
 
-                x.append(x_index)
-                y.append(y_index)
-                z.append(z_index)
-                values.append(count)
-                codon_info.append(f'Codón: {codon}, Frecuencia: {count}')
-
-        # Crear gráfico 3D con Plotly
     trace_3d = go.Scatter3d(
-            x=x,
-            y=y,
-            z=z,
-            mode='markers',
-            marker=dict(
-                size=12,
-                color=values,
-                colorscale='Viridis',
-                colorbar=dict(title="Frecuencia de Codón"),
-                opacity=0.8
-            ),
-            text=codon_info,
-            hovertemplate=(
-                '<b>%{text}</b><br>'
-                'Coordenadas: (%{x}, %{y}, %{z})<br>'
-                'Frecuencia: %{marker.color}<br>'
-                '<extra></extra>'
-            )
+        x=x, y=y, z=z, mode='markers',
+        marker=dict(size=12, color=values, colorscale='Viridis', opacity=0.8),
+        text=codon_info, hovertemplate=(
+            '<b>%{text}</b><br>'
+            'Coordenadas: (%{x}, %{y}, %{z})<br>'
+            '<extra></extra>'
         )
-
+    )
     layout_3d = go.Layout(
-            title='Dispersión 3D de Codones de ADN',
-            scene=dict(
-                xaxis=dict(title='Primer Nucleótido'),
-                yaxis=dict(title='Segundo Nucleótido'),
-                zaxis=dict(title='Tercer Nucleótido'),
-            ),
-            margin=dict(l=0, r=0, b=0, t=40),
-            width=600,  # Ancho de la figura
-            height=600,  # Alto de la figura
-            autosize=True  # Centrado automático
+        title="Visualización 3D de Codones",
+        scene=dict(
+            xaxis=dict(title='Primer Nucleótido'),
+            yaxis=dict(title='Segundo Nucleótido'),
+            zaxis=dict(title='Tercer Nucleótido')
         )
-
+    )
     fig_3d = go.Figure(data=[trace_3d], layout=layout_3d)
     st.plotly_chart(fig_3d)
-=======
-fig_3d = go.Figure(data=[trace_3d], layout=layout_3d)
-st.plotly_chart(fig_3d)
->>>>>>> 47af9ebacd9ce99e291aa66a9d2cf6221355fc30
